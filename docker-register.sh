@@ -20,7 +20,9 @@ if [ $? != 0 ]; then
 fi
 
 show_images() {
-	local images_str=`curl http://$REGISTRY/v2/_catalog 2>/dev/null | sed -e 's/[][]//g' -e 's/"//g' -e 's/ //g' | tr '}' '\n'  | awk -F: '{print $2}'`
+	local images_str=`curl http://$REGISTRY/v2/_catalog 2>/dev/null   \
+	      | sed -e 's/[][]//g' -e 's/"//g' -e 's/ //g' | tr '}' '\n'  \
+	      | awk -F: '{print $2}'`
 	local images=${images_str//\,/\ }
 	for image in $images; do
 		echo $image
@@ -42,7 +44,9 @@ check_image() {
 
 show_tags() {
 	local image=$1
-	local tags_str=`curl http://$REGISTRY/v2/$image/tags/list 2>/dev/null | sed -e 's/[][]//g' -e 's/"//g' -e 's/ //g' | tr '}' '\n'  | awk -F: '{print $3}'`
+	local tags_str=`curl http://$REGISTRY/v2/$image/tags/list 2>/dev/null  \
+	      | sed -e 's/[][]//g' -e 's/"//g' -e 's/ //g' | tr '}' '\n'       \
+	      | awk -F: '{print $3}'`
 	local tags=${tags_str//\,/\ }
 	for tag in $tags; do
 		echo $tag
