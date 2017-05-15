@@ -8,6 +8,7 @@ Usage:
 	$0 list [REGISTRY]          # list all images from current REGISTRY, default is $REGISTRY
 	$0 show IMAGE [REGISTRY]    # list all tags form IMAGE
 	$0 show --all [REGISTRY]    # list all tags form all images
+	$0 push --all [REGISTRY]    # auto tag and push all local images to remote REGISTRY registry
 
 	$0 -h or --help             # show this help info
 "
@@ -71,6 +72,15 @@ check_registry() {
 	fi
 }
 
+tag_and_push_local_images() {
+        local IMAGES=$(docker images |grep -v "$REGISTRY" |awk 'NR!=1 {print $1 ":" $2 }')
+
+        for image in $IMAGES; do
+                docker tag $image $REGISTRY/$image
+                docker push $REGISTRY/$image
+        done
+}
+
 if [ "$1" = "-h" -o "$1" = "--help"  -o "$1" == "" ]; then
 	usage
 	exit 0
@@ -91,7 +101,17 @@ if [ "$1" = "show" -a "$2" != "" ]; then
 		show_tags $2 | awk '{print "'"$2:"'" $0}'
 		exit 0
 	fi
+elif [ "$1" = "push" -a "$2" != "" ]; then
+	check_registry $3
+	if [ "$2" = "--all" ]; then
+		tag_and_push_local_images
+	else
+		echo "Arg error!"
+		usage
+		exit 1
+	fi
 else
 	echo "Arg error!"
 	usage
+	exit 1
 fi
