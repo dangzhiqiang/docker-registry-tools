@@ -14,13 +14,14 @@ docker-register.sh 可以查看指定仓库中的所有镜像列表，可以查�
 ## 用法
 详见--help信息
 
-    ./docker-register.sh --help
-
     Usage:
-      ./docker-register.sh list [REGISTRY]          # list all images from current REGISTRY, default is 127.0.0.1:5000
-      ./docker-register.sh show IMAGE [REGISTRY]    # list all tags form IMAGE
-      ./docker-register.sh show --all [REGISTRY]    # list all tags form all images
-      ./docker-register.sh push --all [REGISTRY]    # auto tag and push all local images to remote REGISTRY registry
+        ./docker-register.sh list [REGISTRY]          # list all images from current REGISTRY, default is 127.0.0.1:5000
+        ./docker-register.sh show IMAGE [REGISTRY]    # list all tags form IMAGE
+        ./docker-register.sh show --all [REGISTRY]    # list all tags form all images
+        ./docker-register.sh push --all REGISTRY      # auto tag and push all local images to remote REGISTRY registry
 
-      ./docker-register.sh -h or --help             # show this help info
+        ./docker-register.sh -h or --help             # show this help info
+
+    Note:
+        Push images must set REGISTRY, and REGISTRY is not support 127.0.0.1:*
 
