@@ -80,6 +80,7 @@ tag_and_push_local_images() {
         for image in $IMAGES; do
                 docker tag $image $REGISTRY/$image
                 docker push $REGISTRY/$image
+                docker rmi  $REGISTRY/$image
         done
 }
 
