@@ -14,11 +14,13 @@ Usage:
 "
 }
 
-which docker >/dev/null 2>&1
-if [ $? != 0 ]; then
-	echo "Error: No docker command is found"
-	exit 1
-fi
+check_cmd() {
+	which docker >/dev/null 2>&1
+	if [ $? != 0 ]; then
+		echo "Error: No docker command is found"
+		exit 1
+	fi
+}
 
 show_images() {
 	local images_str=`curl http://$REGISTRY/v2/_catalog 2>/dev/null   \
@@ -85,6 +87,8 @@ if [ "$1" = "-h" -o "$1" = "--help"  -o "$1" == "" ]; then
 	usage
 	exit 0
 fi
+
+check_cmd
 
 if [ "$1" = "list" ]; then
 	check_registry $2
