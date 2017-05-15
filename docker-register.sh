@@ -8,9 +8,12 @@ Usage:
 	$0 list [REGISTRY]          # list all images from current REGISTRY, default is $REGISTRY
 	$0 show IMAGE [REGISTRY]    # list all tags form IMAGE
 	$0 show --all [REGISTRY]    # list all tags form all images
-	$0 push --all [REGISTRY]    # auto tag and push all local images to remote REGISTRY registry
+	$0 push --all REGISTRY      # auto tag and push all local images to remote REGISTRY registry
 
 	$0 -h or --help             # show this help info
+
+Note:
+	Push images must set REGISTRY, and REGISTRY is not support 127.0.0.1:*
 "
 }
 
@@ -107,7 +110,12 @@ if [ "$1" = "show" -a "$2" != "" ]; then
 		exit 0
 	fi
 elif [ "$1" = "push" -a "$2" != "" ]; then
-	check_registry $3
+	registry=$3
+	if [ "$registry" = "" -o "${registry%%:*}" = "127.0.0.1" ]; then
+		echo "Error: Push images must set REGISTRY, and REGISTRY is not support 127.0.0.1:*"
+		exit 1
+	fi
+	check_registry $registry
 	if [ "$2" = "--all" ]; then
 		tag_and_push_local_images
 	else
