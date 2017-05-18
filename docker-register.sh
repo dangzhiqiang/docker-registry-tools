@@ -26,12 +26,17 @@ check_cmd() {
 }
 
 show_images() {
-	local images_str=`curl http://$REGISTRY/v2/_catalog 2>/dev/null   \
-	      | sed -e 's/[][]//g' -e 's/"//g' -e 's/ //g' | tr '}' '\n'  \
-	      | awk -F: '{print $2}'`
-	local images=${images_str//\,/\ }
-	for image in $images; do
-		echo $image
+	local IP=$REGISTRY
+
+	str1=$(curl https://$REGISTRY/v2/_catalog 2>/dev/null)
+	if [ "${PIPESTATUS[0]}" = "35" ]; then
+		str1=$(curl http://$REGISTRY/v2/_catalog 2>/dev/null)
+	fi
+	str2=$(echo ${str1##*\"repositories\"\:})
+	tags=$(echo ${str2//[\[|\]|\,|\"|\}]/ })
+
+	for tag in $tags; do
+		echo $tag
 	done
 }
 
@@ -49,11 +54,16 @@ check_image() {
 }
 
 show_tags() {
-	local image=$1
-	local tags_str=`curl http://$REGISTRY/v2/$image/tags/list 2>/dev/null  \
-	      | sed -e 's/[][]//g' -e 's/"//g' -e 's/ //g' | tr '}' '\n'       \
-	      | awk -F: '{print $3}'`
-	local tags=${tags_str//\,/\ }
+	local IMAGE=$1
+	local IP=$REGISTRY
+
+	str1=$(curl https://$IP/v2/$IMAGE/tags/list 2>/dev/null)
+	if [ "${PIPESTATUS[0]}" = "35" ]; then
+		str1=$(curl http://$IP/v2/$IMAGE/tags/list 2>/dev/null)
+	fi
+	str2=$(echo ${str1##*\"tags\"\:})
+	tags=$(echo ${str2//[\[|\]|\,|\"|\}]/ })
+
 	for tag in $tags; do
 		echo $tag
 	done
