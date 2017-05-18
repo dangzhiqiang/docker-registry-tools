@@ -12,6 +12,22 @@ docker-register.sh 可以查看指定仓库中的所有镜像列表，可以查�
 3、删除私有仓库指定镜像功能。
 
 ## 用法
+
+1、下载源码
+
+    git clone https://github.com/dangzhiqiang/docker-registry-tools.git
+    
+    或者直接下载安装包
+    
+    wget https://github.com/dangzhiqiang/docker-registry-tools/archive/master.zip
+
+2、安装
+
+    cd docker-registry-tools
+    ./install.sh
+
+3、使用方法
+
 详见--help信息
 
     Usage:
