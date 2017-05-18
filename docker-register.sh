@@ -32,6 +32,11 @@ show_images() {
 	if [ "${PIPESTATUS[0]}" = "35" ]; then
 		str1=$(curl http://$REGISTRY/v2/_catalog 2>/dev/null)
 	fi
+	echo $str1 |grep errors |grep UNAUTHORIZED >/dev/null 2>&1
+	if [ "$?" = "0" ]; then
+		return 1
+	fi
+
 	str2=$(echo ${str1##*\"repositories\"\:})
 	tags=$(echo ${str2//[\[|\]|\,|\"|\}]/ })
 
@@ -52,7 +57,7 @@ check_image() {
 			echo "Error: can not find image \"$1\" from catalog"
 			exit 1
 		else
-			echo "Warning: can not find image \"$1\" from catalog, may UNAUTHORIZED"
+			echo "Warning: can not find image \"$1\" from catalog, UNAUTHORIZED"
 		fi
 	fi
 }
@@ -111,6 +116,10 @@ check_cmd
 if [ "$1" = "list" ]; then
 	check_registry $2
 	show_images
+	if [ "$?" != "0" ]; then
+		echo "Error: No valid credential was supplied, UNAUTHORIZED"
+		exit 1
+	fi
 	exit 0
 fi
 
