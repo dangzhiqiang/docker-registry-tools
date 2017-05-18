@@ -74,7 +74,7 @@ show_tags() {
 }
 
 show_all_tags() {
-	images=$(show_images)
+	local images=$(show_images)
 	for images in $images; do
 		show_tags $images | awk '{print "'"$images:"'" $0}'
 	done
