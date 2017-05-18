@@ -41,15 +41,19 @@ show_images() {
 }
 
 check_image() {
-	images=$(show_images)
+	local images=$(show_images)
 	for images in $images; do
 		if [ "$images" = "$1" ]; then
 			i_find=1
 		fi
 	done
 	if [ "$i_find" != "1" ]; then
-		echo "Args error, can not find image: $1"
-		exit 1
+		if [ "$images" != "" ]; then
+			echo "Error: can not find image \"$1\" from catalog"
+			exit 1
+		else
+			echo "Warning: can not find image \"$1\" from catalog, may UNAUTHORIZED"
+		fi
 	fi
 }
 
