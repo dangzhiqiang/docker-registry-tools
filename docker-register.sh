@@ -6,9 +6,10 @@ usage() {
 	echo "
 Usage:
 	$0 list [REGISTRY]          # list all images from current REGISTRY, default is $REGISTRY
-	$0 show IMAGE [REGISTRY]    # list all tags form IMAGE
-	$0 show --all [REGISTRY]    # list all tags form all images
-	$0 push --all REGISTRY      # auto tag and push all local images to remote REGISTRY registry
+	$0 show IMAGE [REGISTRY]    # list all tags form IMAGE, registry default is $REGISTRY
+	$0 show --all [REGISTRY]    # list all tags form all images, registry default is $REGISTRY
+	$0 tags DOCKER_IMAGE        # list all tags form DOCKER_IMAGE, DOCKER_IMAGE from docker images etc.
+	$0 push --all REGISTRY      # auto tag and push all local images to remote registry
 
 	$0 -h or --help             # show this help info
 
@@ -131,6 +132,16 @@ if [ "$1" = "show" -a "$2" != "" ]; then
 		check_image $2
 		show_tags $2 | awk '{print "'"$2:"'" $0}'
 		exit 0
+	fi
+elif [ "$1" = "tags" -a "$2" != "" ]; then
+	IP=$(echo $2 | cut -d / -f 1)
+	IMAGE=$(echo $2 |cut -d / -f 2- | cut -d : -f 1)
+	if [ "$IP" != "" -a "$IMAGE" != "" ]; then
+		check_registry $IP
+		show_tags $IMAGE | awk '{print "'"$2:"'" $0}'
+	else
+		echo "Arg error!"
+		exit 1
 	fi
 elif [ "$1" = "push" -a "$2" != "" ]; then
 	registry=$3
