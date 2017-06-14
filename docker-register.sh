@@ -48,8 +48,8 @@ show_images() {
 
 check_image() {
 	local images=$(show_images)
-	for images in $images; do
-		if [ "$images" = "$1" ]; then
+	for image in $images; do
+		if [ "$image" = "$1" ]; then
 			i_find=1
 		fi
 	done
@@ -81,8 +81,8 @@ show_tags() {
 
 show_all_tags() {
 	local images=$(show_images)
-	for images in $images; do
-		show_tags $images | awk '{print "'"$images:"'" $0}'
+	for image in $images; do
+		show_tags $image | awk '{print "'"$image:"'" $0}'
 	done
 }
 
