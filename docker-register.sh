@@ -8,6 +8,7 @@ Usage:
 	$0 list [REGISTRY]          # list all images from current REGISTRY, default is $REGISTRY
 	$0 show IMAGE [REGISTRY]    # list all tags form IMAGE, registry default is $REGISTRY
 	$0 show --all [REGISTRY]    # list all tags form all images, registry default is $REGISTRY
+	$0 show --all --grep PATTERN [REGISTRY]    # list all tags form all images, registry default is $REGISTRY
 	$0 tags DOCKER_IMAGE        # list all tags form DOCKER_IMAGE, DOCKER_IMAGE from docker images etc.
 	$0 push --all REGISTRY      # auto tag and push all local images to remote registry
 
@@ -86,6 +87,17 @@ show_all_tags() {
 	done
 }
 
+show_all_tags_grep() {
+	local pattern=$1
+	local images=$(show_images)
+	for image in $images; do
+		echo $image | grep $pattern >/dev/null 2>&1
+		if [ "$?" == "0" ]; then
+			show_tags $image | awk '{print "'"$image:"'" $0}'
+		fi
+	done
+}
+
 check_registry() {
 	if [ "$1" != "" ]; then
 		REGISTRY=$1
@@ -125,6 +137,15 @@ if [ "$1" = "list" ]; then
 fi
 
 if [ "$1" = "show" -a "$2" != "" ]; then
+	if [ "$3" == "--grep" ]; then
+		if [ "$4" == "" ]; then
+			echo "Arg error: lost arg, PATTERN cannot be blank"
+			exit 1
+		fi
+		check_registry $5
+		show_all_tags_grep $4
+		exit 0
+	fi
 	check_registry $3
 	if [ "$2" = "--all" ]; then
 		show_all_tags
