@@ -31,14 +31,17 @@ docker-register.sh 可以查看指定仓库中的所有镜像列表，可以查�
 详见--help信息
 
     Usage:
-        /bin/docker-register list [REGISTRY]                       # list all images from current REGISTRY, default is 127.0.0.1:5000
-        /bin/docker-register show IMAGE [REGISTRY]                 # list all tags form IMAGE, registry default is 127.0.0.1:5000
-        /bin/docker-register show --all [REGISTRY]                 # list all tags form all images, registry default is 127.0.0.1:5000
-        /bin/docker-register show --all --grep PATTERN [REGISTRY]  # list all tags form all images, registry default is 127.0.0.1:5000
-        /bin/docker-register tags DOCKER_IMAGE                     # list all tags form DOCKER_IMAGE, DOCKER_IMAGE from docker images etc.
-        /bin/docker-register push --all REGISTRY                   # auto tag and push all local images to remote registry
+        ./docker-register.sh list [REGISTRY]                       # list all images from current REGISTRY
+        ./docker-register.sh show IMAGE [REGISTRY]                 # list all tags form REGISTRY IMAGE
+        ./docker-register.sh show --all [REGISTRY]                 # list all tags form all images
+        ./docker-register.sh show --all --grep PATTERN [REGISTRY]  # list all tags form all images which grep by PATTERN
+        ./docker-register.sh tags DOCKER_IMAGE                     # list all tags form DOCKER_IMAGE, can found by "docker images"(REPOSITORY)
+        ./docker-register.sh push --all REGISTRY                   # auto tag and push all local images to remote registry
 
-        /bin/docker-register -h or --help                          # show this help info
+        ./docker-register.sh -h or --help                          # show this help info
+
+        REGISTRY:
+            registry default is 127.0.0.1:5000
 
     Note:
         Push images must set REGISTRY, and REGISTRY is not support 127.0.0.1:*

@@ -5,14 +5,17 @@ REGISTRY="127.0.0.1:5000"
 usage() {
 	echo "
 Usage:
-	$0 list [REGISTRY]                       # list all images from current REGISTRY, default is $REGISTRY
-	$0 show IMAGE [REGISTRY]                 # list all tags form IMAGE, registry default is $REGISTRY
-	$0 show --all [REGISTRY]                 # list all tags form all images, registry default is $REGISTRY
-	$0 show --all --grep PATTERN [REGISTRY]  # list all tags form all images, registry default is $REGISTRY
-	$0 tags DOCKER_IMAGE                     # list all tags form DOCKER_IMAGE, DOCKER_IMAGE from docker images etc.
+	$0 list [REGISTRY]                       # list all images from current REGISTRY
+	$0 show IMAGE [REGISTRY]                 # list all tags form REGISTRY IMAGE
+	$0 show --all [REGISTRY]                 # list all tags form all images
+	$0 show --all --grep PATTERN [REGISTRY]  # list all tags form all images which grep by PATTERN
+	$0 tags DOCKER_IMAGE                     # list all tags form DOCKER_IMAGE, can found by \"docker images\"(REPOSITORY)
 	$0 push --all REGISTRY                   # auto tag and push all local images to remote registry
 
 	$0 -h or --help                          # show this help info
+
+	REGISTRY:
+		registry default is $REGISTRY
 
 Note:
 	Push images must set REGISTRY, and REGISTRY is not support 127.0.0.1:*
