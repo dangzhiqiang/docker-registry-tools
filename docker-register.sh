@@ -10,7 +10,9 @@ Usage:
 	$0 show --all [REGISTRY]                 # list all tags form all images
 	$0 show --all --grep PATTERN [REGISTRY]  # list all tags form all images which grep by PATTERN
 	$0 tags DOCKER_IMAGE                     # list all tags form DOCKER_IMAGE, can found by \"docker images\"(REPOSITORY)
+	$0 push IMAGE REGISTRY                   # auto tag and push local images to remote registry
 	$0 push --all REGISTRY                   # auto tag and push all local images to remote registry
+	$0 push --all --grep PATTERN REGISTRY    # auto tag and push all local images to remote registry which grep by PATTERN
 
 	$0 -h or --help                          # show this help info
 
@@ -20,6 +22,12 @@ Usage:
 Note:
 	Push images must set REGISTRY, and REGISTRY is not support 127.0.0.1:*
 "
+}
+
+arg_error() {
+	echo "Arg error! $@"
+	usage
+	exit 1
 }
 
 check_cmd() {
@@ -112,13 +120,34 @@ check_registry() {
 	fi
 }
 
-tag_and_push_local_images() {
-        local IMAGES=$(docker images |grep -v "$REGISTRY" |awk 'NR!=1 {print $1 ":" $2 }')
+set_push_registry() {
+	registry=$1
+	if [ "$registry" = "" -o "${registry%%:*}" = "127.0.0.1" ]; then
+		echo "Error: Push images must set REGISTRY, and REGISTRY is not support 127.0.0.1:*"
+		exit 1
+	fi
+	check_registry $registry
+}
 
+get_local_images() {
+        IMAGES=$(docker images |grep -v "$REGISTRY" |awk 'NR!=1 {print $1 ":" $2 }')
+}
+
+get_local_images_by_pattern() {
+        IMAGES=$(docker images |grep -v "$REGISTRY" |grep "$1" |awk 'NR!=1 {print $1 ":" $2 }')
+}
+
+push_local_images() {
+	if [ "$IMAGES" = "" ]; then
+		echo "WARNING: No image was found, do nothing"
+		exit 0
+	fi
         for image in $IMAGES; do
+		echo "\
                 docker tag $image $REGISTRY/$image
                 docker push $REGISTRY/$image
                 docker rmi  $REGISTRY/$image
+		"
         done
 }
 
@@ -168,21 +197,29 @@ elif [ "$1" = "tags" -a "$2" != "" ]; then
 		exit 1
 	fi
 elif [ "$1" = "push" -a "$2" != "" ]; then
-	registry=$3
-	if [ "$registry" = "" -o "${registry%%:*}" = "127.0.0.1" ]; then
-		echo "Error: Push images must set REGISTRY, and REGISTRY is not support 127.0.0.1:*"
-		exit 1
-	fi
-	check_registry $registry
 	if [ "$2" = "--all" ]; then
-		tag_and_push_local_images
+		if [ "$3" = "--grep" ]; then
+			if [ "$4" != "" -a "$5" != "" ]; then
+				set_push_registry $5
+				get_local_images_by_pattern $4
+				push_local_images
+			else
+				arg_error
+			fi
+		elif [ "$4" = "" ]; then
+			set_push_registry $3
+			get_local_images
+			push_local_images
+		else
+			arg_error
+		fi
+	elif [ "$3" != "" ]; then
+		set_push_registry $3
+		IMAGES=$2
+		push_local_images
 	else
-		echo "Arg error!"
-		usage
-		exit 1
+		arg_error
 	fi
 else
-	echo "Arg error!"
-	usage
-	exit 1
+	arg_error
 fi
