@@ -151,6 +151,20 @@ push_local_images() {
         done
 }
 
+check_local_image() {
+	get_local_images
+        for image in $IMAGES; do
+		if [ "$1" = "$image" ]; then
+			find_it=true
+		fi
+        done
+	if [ ! $find_it ]; then
+		arg_error "\"$1\" is not found"
+	else
+		IMAGES=$1
+	fi
+}
+
 if [ "$1" = "-h" -o "$1" = "--help"  -o "$1" == "" ]; then
 	usage
 	exit 0
@@ -216,6 +230,7 @@ elif [ "$1" = "push" -a "$2" != "" ]; then
 	elif [ "$3" != "" ]; then
 		set_push_registry $3
 		IMAGES=$2
+		check_local_image $2
 		push_local_images
 	else
 		arg_error
