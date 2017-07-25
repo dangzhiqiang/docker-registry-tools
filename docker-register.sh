@@ -109,7 +109,7 @@ show_all_tags_grep() {
 	done
 }
 
-check_registry() {
+set_registry() {
 	if [ "$1" != "" ]; then
 		REGISTRY=$1
 	fi
@@ -126,7 +126,7 @@ set_push_registry() {
 		echo "Error: Push images must set REGISTRY, and REGISTRY is not support 127.0.0.1:*"
 		exit 1
 	fi
-	check_registry $registry
+	set_registry $registry
 }
 
 get_local_images() {
@@ -159,7 +159,7 @@ fi
 check_cmd
 
 if [ "$1" = "list" ]; then
-	check_registry $2
+	set_registry $2
 	show_images
 	if [ "$?" != "0" ]; then
 		echo "Error: No valid credential was supplied, UNAUTHORIZED"
@@ -174,11 +174,11 @@ if [ "$1" = "show" -a "$2" != "" ]; then
 			echo "Arg error: lost arg, PATTERN cannot be blank"
 			exit 1
 		fi
-		check_registry $5
+		set_registry $5
 		show_all_tags_grep $4
 		exit 0
 	fi
-	check_registry $3
+	set_registry $3
 	if [ "$2" = "--all" ]; then
 		show_all_tags
 	else
@@ -190,7 +190,7 @@ elif [ "$1" = "tags" -a "$2" != "" ]; then
 	IP=$(echo $2 | cut -d / -f 1)
 	IMAGE=$(echo $2 |cut -d / -f 2- | cut -d : -f 1)
 	if [ "$IP" != "" -a "$IMAGE" != "" ]; then
-		check_registry $IP
+		set_registry $IP
 		show_tags $IMAGE | awk '{print "'"$IP/$IMAGE:"'" $0}'
 	else
 		echo "Arg error!"
