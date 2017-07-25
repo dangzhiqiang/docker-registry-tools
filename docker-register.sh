@@ -162,7 +162,7 @@ elif [ "$1" = "tags" -a "$2" != "" ]; then
 	IMAGE=$(echo $2 |cut -d / -f 2- | cut -d : -f 1)
 	if [ "$IP" != "" -a "$IMAGE" != "" ]; then
 		check_registry $IP
-		show_tags $IMAGE | awk '{print "'"$2:"'" $0}'
+		show_tags $IMAGE | awk '{print "'"$IP/$IMAGE:"'" $0}'
 	else
 		echo "Arg error!"
 		exit 1
