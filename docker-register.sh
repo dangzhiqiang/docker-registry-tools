@@ -130,11 +130,11 @@ set_push_registry() {
 }
 
 get_local_images() {
-        IMAGES=$(docker images |grep -v "$REGISTRY" |awk 'NR!=1 {print $1 ":" $2 }')
+	IMAGES=$(docker images |grep -v "$REGISTRY" |awk 'NR!=1 {print $1 ":" $2 }')
 }
 
 get_local_images_by_pattern() {
-        IMAGES=$(docker images |grep -v "$REGISTRY" |grep "$1" |awk 'NR!=1 {print $1 ":" $2 }')
+	IMAGES=$(docker images |grep -v "$REGISTRY" |grep "$1" |awk 'NR!=1 {print $1 ":" $2 }')
 }
 
 push_local_images() {
@@ -153,22 +153,22 @@ push_local_images() {
 		exit 0
 	fi
 
-        for image in $IMAGES; do
+	for image in $IMAGES; do
 		echo "\
-                docker tag $image $REGISTRY/$image
-                docker push $REGISTRY/$image
-                docker rmi  $REGISTRY/$image
+		docker tag $image $REGISTRY/$image
+		docker push $REGISTRY/$image
+		docker rmi  $REGISTRY/$image
 		"
-        done
+	done
 }
 
 check_local_image() {
 	get_local_images
-        for image in $IMAGES; do
+	for image in $IMAGES; do
 		if [ "$1" = "$image" ]; then
 			find_it=true
 		fi
-        done
+	done
 	if [ ! $find_it ]; then
 		arg_error "\"$1\" is not found"
 	else
@@ -176,7 +176,7 @@ check_local_image() {
 	fi
 }
 
-if [ "$1" = "-h" -o "$1" = "--help"  -o "$1" == "" ]; then
+if [ "$1" = "-h" -o "$1" = "--help" -o "$1" == "" ]; then
 	usage
 	exit 0
 fi
