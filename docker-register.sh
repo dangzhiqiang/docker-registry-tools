@@ -21,6 +21,8 @@ Usage:
 
 Note:
 	Push images must set REGISTRY, and REGISTRY is not support 127.0.0.1:*
+
+	SOURCE: https://github.com/dangzhiqiang/docker-registry-tools.git
 "
 }
 
