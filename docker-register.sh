@@ -142,6 +142,17 @@ push_local_images() {
 		echo "WARNING: No image was found, do nothing"
 		exit 0
 	fi
+
+	for image in $IMAGES; do
+		echo -e "WILL PUSH: $image \t ==> $REGISTRY/$image"
+	done
+	
+	read -p "Is this ok [y/N]: " -i y -e answer
+	if [ "$answer" != "y" -a "$answer" != "yes" ]; then
+		echo "Exiting on user command"
+		exit 0
+	fi
+
         for image in $IMAGES; do
 		echo "\
                 docker tag $image $REGISTRY/$image
