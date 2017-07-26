@@ -154,11 +154,9 @@ push_local_images() {
 	fi
 
 	for image in $IMAGES; do
-		echo "\
 		docker tag $image $REGISTRY/$image
 		docker push $REGISTRY/$image
 		docker rmi  $REGISTRY/$image
-		"
 	done
 }
 
