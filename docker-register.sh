@@ -132,11 +132,11 @@ set_push_registry() {
 }
 
 get_local_images() {
-	IMAGES=$(docker images |grep -v "$REGISTRY" |awk 'NR!=1 {print $1 ":" $2 }')
+	IMAGES=$(docker images |awk 'NR!=1 {print $0}' |grep -v "$REGISTRY" |awk '{print $1 ":" $2 }')
 }
 
 get_local_images_by_pattern() {
-	IMAGES=$(docker images |grep -v "$REGISTRY" |grep "$1" |awk 'NR!=1 {print $1 ":" $2 }')
+	IMAGES=$(docker images |awk 'NR!=1 {print $0}' |grep -v "$REGISTRY" |grep "$1" |awk '{print $1 ":" $2 }')
 }
 
 del_ip_registry_in_image_str() {
