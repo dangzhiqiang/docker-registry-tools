@@ -8,11 +8,11 @@ docker私有仓库管理工具
 
 ### 待添加功能
 
-push上传指定镜像到私有docker仓库。（已完成）
+1、push上传指定镜像到私有docker仓库。（已完成）
 
-push上传支持模式匹配。（已完成）
+2、push上传支持模式匹配。（已完成）
 
-删除私有仓库中指定镜像。（已完成）
+3、删除私有仓库中指定镜像。
 
 ## 用法
 
@@ -51,3 +51,5 @@ push上传支持模式匹配。（已完成）
     Note:
         Push images must set REGISTRY, and REGISTRY is not support 127.0.0.1:*
 
+        SOURCE: https://github.com/dangzhiqiang/docker-registry-tools.git
+        
