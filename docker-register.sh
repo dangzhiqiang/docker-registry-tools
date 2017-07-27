@@ -139,6 +139,17 @@ get_local_images_by_pattern() {
 	IMAGES=$(docker images |grep -v "$REGISTRY" |grep "$1" |awk 'NR!=1 {print $1 ":" $2 }')
 }
 
+del_ip_registry_in_image_str() {
+	IP=$(echo $1 | cut -d / -f 1)
+	tmp=${IP//[0-9]/}
+	if [ "$tmp" == "..." -o "$tmp" = "...:" ]; then
+		new_str=$(echo $1 | cut -d / -f 2-)
+	else
+		new_str=$1
+	fi
+	echo $new_str
+}
+
 push_local_images() {
 	if [ "$IMAGES" = "" ]; then
 		echo "WARNING: No image was found, do nothing"
@@ -146,7 +157,8 @@ push_local_images() {
 	fi
 
 	for image in $IMAGES; do
-		echo -e "WILL PUSH: $image \t ==> $REGISTRY/$image"
+		new_image=$(del_ip_registry_in_image_str $image)
+		echo -e "WILL PUSH: $image \t ==> $REGISTRY/$new_image"
 	done
 	
 	read -p "Is this ok [y/N]: " -i y -e answer
@@ -156,9 +168,10 @@ push_local_images() {
 	fi
 
 	for image in $IMAGES; do
-		docker tag $image $REGISTRY/$image
-		docker push $REGISTRY/$image
-		docker rmi  $REGISTRY/$image
+		new_image=$(del_ip_registry_in_image_str $image)
+		docker tag $image $REGISTRY/$new_image
+		docker push $REGISTRY/$new_image
+		docker rmi  $REGISTRY/$new_image
 	done
 }
 
