@@ -14,6 +14,15 @@ docker私有仓库管理工具
 
 3、删除私有仓库中指定镜像。
 
+### 支持平台
+
+在centos7/RHEL7环境测试通过，要求系统安装docker环境，并且docker服务处于正常运行状态。
+理论上也支持其他安装docker环境的linux操作系统，但未测试，在其他linux平台使用的用户，可帮忙反馈测试结果。
+
+如果需要通过http方式上传docker镜像，要在docker配置文件中添加如下参数：
+
+    --insecure-registry IP:port
+
 ## 用法
 
 1、下载源码
@@ -52,4 +61,3 @@ docker私有仓库管理工具
         Push images must set REGISTRY, and REGISTRY is not support 127.0.0.1:*
 
         SOURCE: https://github.com/dangzhiqiang/docker-registry-tools.git
-        
